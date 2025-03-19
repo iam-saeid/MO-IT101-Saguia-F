@@ -278,24 +278,37 @@ public class MotorPHPayrollSystem {
     float taxableIncome = grossSalary - totalDeductions;
     float netSalary = taxableIncome - Deductions.withholdingTax(taxableIncome);
     
+    System.out.println("---------------------------------------------------------------------------------------");
     
-    System.out.println("--------------------------------------------------------------------------------------");
-    System.out.println("\nGROSS SALARY ");
-    System.out.println("\nTotal Hours Worked: " + totalRegularHours + " hours");
-    System.out.println("Hourly Rate: PHP" + hourlyRate);
-    System.out.println("Overtime Pay: PHP" + overtimePay);
-    System.out.println("Tardiness Deduction: -PHP" + totalTardiness);
-    System.out.println("Gross Salary: PHP" + String.format("%.2f", grossSalary));
-    System.out.println("--------------------------------------------------------------------------------------");
-    System.out.println("\nGOVERNMENT MANDATED DEDUCTIONS");
-    System.out.println("\nSSS Contribution: PHP" + String.format("%.2f",Deductions.deductSSS(basicSalary)));
-    System.out.println("Philhealth Contribution: PHP" + String.format("%.2f",Deductions.deductPhilHealth(basicSalary)));
-    System.out.println("PAG-IBIG Contribution: PHP" + String.format("%.2f",Deductions.deductPagibig(basicSalary)));
-    System.out.println("Total Deductions: PHP" + String.format("%.2f",totalDeductions));
-    System.out.println("\nWithholding Tax: PHP" + String.format("%.2f",Deductions.withholdingTax(taxableIncome)));
-    System.out.println("--------------------------------------------------------------------------------------");
-    System.out.println("\nNET SALARY ");
-    System.out.println("\nNet Salary: PHP" + String.format("%.2f",netSalary));
+    System.out.println("----------------------------------------------");
+    System.out.println("|        MOTORPH EMPLOYEE PAYSLIP            |");
+    System.out.println("----------------------------------------------");
+    System.out.println("Employee ID: " + searchEmployeeID);
+    System.out.println("Employee Name: " + employeeName);
+    System.out.println("\n----------------------------------------------");
+    System.out.printf("|               GROSS SALARY                 |");
+    System.out.println("\n----------------------------------------------");
+    System.out.printf("| %-25s | %-14.2f |\n", "Total Hours Worked", totalRegularHours);
+    System.out.printf("| %-25s | PHP %-10.2f |\n","Hourly Rate", hourlyRate);
+    System.out.printf("| %-25s | PHP %-10.2f |\n","Overtime Pay",  overtimePay);
+    System.out.printf("| %-25s | -PHP %-9.2f |\n","Tardiness Deduction", totalTardiness);
+    System.out.printf("| %-25s | PHP %-10.2f |\n","Gross Salary",  grossSalary);
+    System.out.println("\n----------------------------------------------");
+    System.out.print("|         GOVERNMENT MANDATED DEDUCTIONS     |");
+    System.out.println("\n----------------------------------------------");
+    System.out.printf("| %-25s | PHP %-10.2f |\n", "SSS Contribution", Deductions.deductSSS(basicSalary));
+    System.out.printf("| %-25s | PHP %-10.2f |\n", "PhilHealth Contribution", Deductions.deductPhilHealth(basicSalary));
+    System.out.printf("| %-25s | PHP %-10.2f |\n", "Pag-IBIG Contribution", Deductions.deductPagibig(basicSalary));
+    System.out.printf("| %-25s | PHP %-10.2f |\n", "Total Deductions", totalDeductions);
+    System.out.printf("| %-25s | PHP %-10.2f |\n", "Withholding Tax", Deductions.withholdingTax(taxableIncome));
+    System.out.println("\n----------------------------------------------");
+    System.out.print("|                  SUMMARY                   |");
+    System.out.println("\n----------------------------------------------");
+    System.out.printf("| %-25s | PHP %-10.2f |\n","Gross Salary",  grossSalary);
+    System.out.printf("| %-25s | -PHP %-9.2f |\n", "Total Deductions", totalDeductions);
+    System.out.printf("| %-25s | -PHP %-9.2f |\n", "Withholding Tax", Deductions.withholdingTax(taxableIncome));
+    System.out.printf("| %-25s | PHP %-10.2f |\n","TAKE HOME PAY",  netSalary);
+    System.out.println("\n----------------------------------------------");
 
   }
 }
