@@ -79,25 +79,22 @@ public class MotorPHPayrollSystem {
                  } 
            }
            
-           
+           //for invalid ID
            if (!valid) {
                System.out.println("Employee with ID number: " + searchEmployeeID + " Not Found."); 
                System.out.println("Double-check the Employee ID.");
            }
            
         }
-        
         catch (IOException e) {
             e.printStackTrace();
-            
         }
         
         finally {        
-            
         }
     }
    
-   
+   //for invalid date format
    public static LocalDate getValidDate(Scanner scan, DateTimeFormatter dateFormatter) {
     LocalDate date = null;
     while (date == null) {
@@ -118,26 +115,12 @@ public class MotorPHPayrollSystem {
     System.out.print("\nEnter Employee ID: ");
     String searchEmployeeID = scan.nextLine();
     
-    /*System.out.print("\nEnter the start date of the month (MM/dd/yyyy): ");
-    LocalDate startDate = getValidDate(scan, dateFormatter);
-    
-    System.out.print("Enter the end date of the month (MM/dd/yyyy): ");
-    LocalDate endDate = getValidDate(scan, dateFormatter);
-    
-    if (endDate.isBefore(startDate)) {
-        System.out.println("ERROR: End date cannot be before start date. Please enter dates again.");
-        return; 
-    }
-    
-    System.out.println(" ");*/
-    
-        
     String attendanceFile = "C:\\Users\\farha\\Desktop\\Attendance.csv"; 
     String employeeFile = "C:\\Users\\farha\\Desktop\\EmployeeInfo.csv";
 
     boolean employeeFound = false;
-    int workDays = 0; 
-    int totalMinutes = 0; //for display
+    int workDays = 0;
+    int totalMinutes =0;
     int totalRegularMinutes = 0;
     int totalOvertimeMinutes = 0;
     int latedailyMinutes =0;
@@ -184,6 +167,7 @@ public class MotorPHPayrollSystem {
     System.out.print("Enter the end date of the month (MM/dd/yyyy): ");
     LocalDate endDate = getValidDate(scan, dateFormatter);
     
+    //if end date is before start date
     if (endDate.isBefore(startDate)) {
         System.out.println("ERROR: End date cannot be before start date. Please try again.");
         return; 
@@ -197,7 +181,6 @@ public class MotorPHPayrollSystem {
         String line;
         reader.readLine(); 
         
-        
         boolean foundAttendance = false;
         
         while ((line = reader.readLine()) != null) {
@@ -205,7 +188,7 @@ public class MotorPHPayrollSystem {
 
             LocalDate date = LocalDate.parse(row[3].trim(), dateFormatter); 
             
-            
+            //search the employee ID and entered dates
             if (row[0].trim().equals(searchEmployeeID) &&  
                 (date.isEqual(startDate) || date.isEqual(endDate) || 
                 (date.isAfter(startDate) && date.isBefore(endDate)))) { 
@@ -237,10 +220,15 @@ public class MotorPHPayrollSystem {
                 int dailyMinutes = (int) Duration.between(loginTime, logoutTime).toMinutes(); 
                 totalMinutes += dailyMinutes;
                 
-                int regularMinutes = (int) Math.min(dailyMinutes, minimumWorkMinutes); // Regular hours capped at 8 hours
+                int regularMinutes;
+                    if (dailyMinutes < minimumWorkMinutes) {
+                    regularMinutes = (int) dailyMinutes;
+                    } else {
+                    regularMinutes = (int) minimumWorkMinutes;
+                } //to separate from overtime hours
                 
+                //OVERTIME HOURS
                 int overtimeMinutes;
-                
                     if (dailyMinutes > minimumWorkMinutes) {
                         overtimeMinutes = dailyMinutes - minimumWorkMinutes;
                         } else {
@@ -249,7 +237,7 @@ public class MotorPHPayrollSystem {
                 
                 // Add to total work time
                 totalRegularMinutes += regularMinutes;
-                totalOvertimeMinutes += overtimeMinutes;
+                totalOvertimeMinutes += overtimeMinutes; 
                     
                 if (loginTime.isAfter(gracePeriod)) {
                     int lateMinutes = (int) Duration.between(gracePeriod, loginTime).toMinutes();
@@ -259,14 +247,13 @@ public class MotorPHPayrollSystem {
                     totalTardiness = totalTardiness + dailyLate;
                 }
                 
-               
-
                 System.out.printf("| %-12s | %-10s | %-10s | %2d hours and %2d minutes |\n", date, loginTime, logoutTime, (dailyMinutes / 60), (dailyMinutes % 60));
 
             }
             
           }
         
+        //invalid date input
         if (!foundAttendance) {
         System.out.println("ERROR: No attendance records found between " + startDate + " and " + endDate);
         System.out.println("Please check the dates and try again.");
