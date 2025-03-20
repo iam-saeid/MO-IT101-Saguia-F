@@ -2,7 +2,7 @@
 package com.mycompany.motorphpayrollsystem;
 
 
-public class Deductions {
+public class Deductions { //ALL DEDUCTIONS ARE BASED ON BASIC SALARY. Tax is based on taxable income
     
   public static float deductSSS(float basicSalary){
          
@@ -100,11 +100,11 @@ public class Deductions {
    public static float deductPhilHealth(float basicSalary) {
        
        if (basicSalary <= 10000) {
-           return 300.00f/2;
+           return 300f/2;
        } else if (basicSalary >= 10000.1f && basicSalary <= 59999.99f) {
            return (basicSalary * 0.03f)/2;
        } else {
-           return 1800.00f / 2;
+           return 1800f / 2;
        }
     }
     
