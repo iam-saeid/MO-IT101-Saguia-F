@@ -260,6 +260,7 @@ public class MotorPHPayrollSystem {
                 }
                 
                
+
                 System.out.printf("| %-12s | %-10s | %-10s | %2d hours and %2d minutes |\n", date, loginTime, logoutTime, (dailyMinutes / 60), (dailyMinutes % 60));
 
             }
@@ -280,6 +281,7 @@ public class MotorPHPayrollSystem {
 
     totalRegularHours = totalRegularMinutes / 60.0f;
     totalOvertimeHours = totalOvertimeMinutes / 60.0f;
+    float overallTotalHours = (float)  totalOvertimeHours + totalRegularHours;
     float tardinessHours = latedailyMinutes/60f;
 
     float regularPay = totalRegularHours * hourlyRate;
@@ -290,9 +292,9 @@ public class MotorPHPayrollSystem {
     float netSalary = taxableIncome - Deductions.withholdingTax(taxableIncome);
     
     System.out.println("----------------------------------------------------------------");
-    System.out.println("Regular Total Hours: " + totalRegularMinutes + " | " + totalRegularHours);
-    System.out.println("Overtime Total Hours: " + totalOvertimeMinutes + " | " + totalOvertimeHours);
-    System.out.println("Tardiness Total Hours: " + totalTardiness + " | " + tardinessHours);
+    System.out.println("Total Regular Hours: "  + totalRegularHours);
+    System.out.println("Total Overtime Hours: "  + totalOvertimeHours);
+    System.out.println("Total Tardiness Hours: " + tardinessHours);
     System.out.println("----------------------------------------------------------------");
     
     
@@ -304,7 +306,7 @@ public class MotorPHPayrollSystem {
     System.out.println("----------------------------------------------");
     System.out.printf("|               GROSS SALARY                 |");
     System.out.println("\n----------------------------------------------");
-    System.out.printf("| %-25s | %-14.2f |\n", "Total Hours Worked", totalRegularHours);
+    System.out.printf("| %-25s | %-14.2f |\n", "Total Hours Worked", overallTotalHours);
     System.out.printf("| %-25s | PHP %-10.2f |\n","Hourly Rate", hourlyRate);
     System.out.printf("| %-25s | PHP %-10.2f |\n","Overtime Pay",  overtimePay);
     System.out.printf("| %-25s | -PHP %-9.2f |\n","Tardiness Deduction", totalTardiness);
