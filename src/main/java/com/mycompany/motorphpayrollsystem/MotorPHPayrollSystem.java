@@ -140,6 +140,7 @@ public class MotorPHPayrollSystem {
     int totalMinutes = 0; //for display
     int totalRegularMinutes = 0;
     int totalOvertimeMinutes = 0;
+    int latedailyMinutes =0;
     float totalRegularHours = 0.0f;
     float totalOvertimeHours = 0.0f;
     float totalTardiness = 0.0f;
@@ -159,6 +160,7 @@ public class MotorPHPayrollSystem {
             if (row[0].trim().equals(searchEmployeeID)) {
                 employeeFound = true;
                 employeeName = row[2] + " " + row[1]; 
+                String dateOfBirth = row[3];
                 hourlyRate = Float.parseFloat(row[15].replaceAll("\"", "").trim()); 
                 basicSalary = Float.parseFloat(row[10].replaceAll("\"", "").trim());
                                                
@@ -210,48 +212,56 @@ public class MotorPHPayrollSystem {
                 
                  if (!foundAttendance) {  
                 System.out.println("\nEmployee Name: " + employeeName);
-                System.out.println("\n--------------------------------------Hours Worked-------------------------------------\n");
+                System.out.println("----------------------TOTAL HOURS WORKED------------------------");
+                System.out.println("----------------------------------------------------------------");
+                System.out.printf("| %-12s | %-10s | %-10s | %-20s |\n", "Date", "Log in", "Log out", "Hours Worked");
+                System.out.println("----------------------------------------------------------------");
                 foundAttendance = true; // date is valid
                 }
                  
                 workDays++; 
                 
+                
                 LocalTime loginTime = LocalTime.parse(row[4].trim().toUpperCase(), timeFormatter); 
                 LocalTime logoutTime = LocalTime.parse(row[5].trim().toUpperCase(), timeFormatter);
-                LocalTime workStart = LocalTime.of(8, 00);
-                LocalTime workEnd = LocalTime.of(17, 00);
                 LocalTime gracePeriod = LocalTime.of(8, 10); 
-               
-
-                int regularMinutes = 0;
-                int overtimeMinutes = 0;
-
-                              
-                if (loginTime.isBefore(workEnd)) {
-                    LocalTime startTime = loginTime.isBefore(workStart) ? workStart : loginTime;
-                    LocalTime endTime = logoutTime.isBefore(workEnd) ? logoutTime : workEnd;
-                    regularMinutes = (int) Duration.between(startTime, endTime).toMinutes();
-                }
+                int minimumWorkMinutes = 8 * 60; // Regular 8 hours in minutes
                 
-                if (logoutTime.isAfter(workEnd)) {
-                overtimeMinutes = (int) Duration.between(workEnd, logoutTime).toMinutes();
-                }
+                // check login and logout times
+                if (logoutTime.isBefore(loginTime)) {
+                    System.out.println("ERROR: Logout time is before login time. Check the database.");
+                    return; // exit
+                    }
                 
-                totalRegularMinutes = totalRegularMinutes + regularMinutes;
-                totalOvertimeMinutes = totalOvertimeMinutes + overtimeMinutes;
+                //caculate total work minutes for the day
+                int dailyMinutes = (int) Duration.between(loginTime, logoutTime).toMinutes(); 
+                totalMinutes += dailyMinutes;
                 
+                int regularMinutes = (int) Math.min(dailyMinutes, minimumWorkMinutes); // Regular hours capped at 8 hours
+                
+                int overtimeMinutes;
+                
+                    if (dailyMinutes > minimumWorkMinutes) {
+                        overtimeMinutes = dailyMinutes - minimumWorkMinutes;
+                        } else {
+                        overtimeMinutes = 0;
+                    }
+                
+                // Add to total work time
+                totalRegularMinutes += regularMinutes;
+                totalOvertimeMinutes += overtimeMinutes;
+                    
                 if (loginTime.isAfter(gracePeriod)) {
                     int lateMinutes = (int) Duration.between(gracePeriod, loginTime).toMinutes();
+                    latedailyMinutes = latedailyMinutes + lateMinutes;
                     float lateHours = lateMinutes/60.0f; //convert to hours
                     float dailyLate = lateHours * hourlyRate;
                     totalTardiness = totalTardiness + dailyLate;
                 }
                 
-                int dailyMinutes = (int) Duration.between(loginTime, logoutTime).toMinutes(); 
-                totalMinutes = totalMinutes + dailyMinutes; //for display
+               
+                System.out.printf("| %-12s | %-10s | %-10s | %2d hours and %2d minutes |\n", date, loginTime, logoutTime, (dailyMinutes / 60), (dailyMinutes % 60));
 
-
-                System.out.println("Date: " + date + " | Log in time: " + loginTime + " | Log out time: " + logoutTime + " | Hours worked: " + (dailyMinutes / 60) + " hours and " + (dailyMinutes % 60) + " minutes");
             }
             
           }
@@ -270,6 +280,7 @@ public class MotorPHPayrollSystem {
 
     totalRegularHours = totalRegularMinutes / 60.0f;
     totalOvertimeHours = totalOvertimeMinutes / 60.0f;
+    float tardinessHours = latedailyMinutes/60f;
 
     float regularPay = totalRegularHours * hourlyRate;
     float overtimePay = totalOvertimeHours * hourlyRate * 1.25f;
@@ -278,14 +289,19 @@ public class MotorPHPayrollSystem {
     float taxableIncome = grossSalary - totalDeductions;
     float netSalary = taxableIncome - Deductions.withholdingTax(taxableIncome);
     
-    System.out.println("---------------------------------------------------------------------------------------");
+    System.out.println("----------------------------------------------------------------");
+    System.out.println("Regular Total Hours: " + totalRegularMinutes + " | " + totalRegularHours);
+    System.out.println("Overtime Total Hours: " + totalOvertimeMinutes + " | " + totalOvertimeHours);
+    System.out.println("Tardiness Total Hours: " + totalTardiness + " | " + tardinessHours);
+    System.out.println("----------------------------------------------------------------");
     
-    System.out.println("----------------------------------------------");
+    
+    System.out.println("\n----------------------------------------------");
     System.out.println("|        MOTORPH EMPLOYEE PAYSLIP            |");
     System.out.println("----------------------------------------------");
-    System.out.println("Employee ID: " + searchEmployeeID);
     System.out.println("Employee Name: " + employeeName);
-    System.out.println("\n----------------------------------------------");
+    System.out.println("Employee ID: " + searchEmployeeID);
+    System.out.println("----------------------------------------------");
     System.out.printf("|               GROSS SALARY                 |");
     System.out.println("\n----------------------------------------------");
     System.out.printf("| %-25s | %-14.2f |\n", "Total Hours Worked", totalRegularHours);
