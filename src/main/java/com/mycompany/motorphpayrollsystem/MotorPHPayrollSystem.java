@@ -65,10 +65,10 @@ public class MotorPHPayrollSystem {
                  // Check if Employee ID matches the search ID.
                  if (row[0].equals(searchEmployeeID)) {
                      
-                     System.out.println("\n----------------------------------------------------------------------------");
+                     System.out.println("\n--------------------------------------------------------------------------------------------------------------------------------");
                      System.out.printf("%-15s %-20s %-20s %-20s %-15s %-20s %-15s %n",
                                        "Employee ID", "First Name", "Last Name", "Birthday", "Status", "Position", "Basic Salary"); 
-                     System.out.println("\n----------------------------------------------------------------------------");         
+                     System.out.println("\n--------------------------------------------------------------------------------------------------------------------------------");         
                      
                      
                      String employeeID = row[0]; 
@@ -258,7 +258,8 @@ public class MotorPHPayrollSystem {
                     totalLateDeductions += (lateMinutes / 60.0f) * hourlyRate;
                 }
                 
-                System.out.printf("| %-12s | %-10s | %-10s | %2d hours and %2d minutes |\n", date, loginTime, logoutTime, (dailyWorkedMinutes / 60), (dailyWorkedMinutes % 60));
+                System.out.printf("| %-12s | %-10s | %-10s | %2d hours and %2d minutes |\n", 
+                                  date, loginTime, logoutTime, (dailyWorkedMinutes / 60), (dailyWorkedMinutes % 60));
 
             }
             
