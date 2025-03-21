@@ -3,7 +3,9 @@ package com.mycompany.motorphpayrollsystem;
 
 
 public class Deductions { //ALL DEDUCTIONS ARE BASED ON BASIC SALARY. Tax is based on taxable income
+  
     
+    //SSS Deduction
   public static float deductSSS(float basicSalary){
          
       if(basicSalary < 3250) {
@@ -97,6 +99,8 @@ public class Deductions { //ALL DEDUCTIONS ARE BASED ON BASIC SALARY. Tax is bas
       }
    }
   
+  
+  //Philhealth Deduction
    public static float deductPhilHealth(float basicSalary) {
        
        if (basicSalary <= 10000) {
@@ -104,14 +108,18 @@ public class Deductions { //ALL DEDUCTIONS ARE BASED ON BASIC SALARY. Tax is bas
        } else if (basicSalary >= 10000.1f && basicSalary <= 59999.99f) {
            return (basicSalary * 0.03f)/2;
        } else {
-           return 1800f / 2;
+           return 1800f / 2; //Equally shared by employee and employer
        }
     }
-    
+  
+   
+   //Pag-Ibig Deduction
   public static float deductPagibig(float basicSalary) {
       return Math.min(basicSalary * 0.02f, 100);
   } 
   
+  
+  //Witholding Tax (Calculated with Gross Salary - All deductions)
   public static float withholdingTax( float taxableIncome) {
       if (taxableIncome <= 20832) {
             return 0;
